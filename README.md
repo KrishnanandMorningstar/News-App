@@ -18,9 +18,8 @@ A clean and beginner-friendly News App built using **HTML, CSS, and JavaScript**
 - NewsData.io API  
 
 ## ▶️ Live Demo
-👉 https://USERNAME.github.io/REPO-NAME/
+👉https://krishnanandmorningstar.github.io/News-App/
 
-*(Replace USERNAME and REPO-NAME with your actual link)*
 
 ## 📚 What I Learned
 - API integration using fetch
