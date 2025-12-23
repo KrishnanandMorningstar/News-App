@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cute News App</title>
+
+<style>
+body{
+  font-family:"Segoe UI",sans-serif;
+  background:linear-gradient(135deg,#ffecd2,#fcb69f);
+  min-height:100vh;
+  margin:0;
+  padding:20px;
+  transition:0.3s;
+}
+.dark{
+  background:#121212;
+  color:white;
+}
+.container{
+  max-width:420px;
+  margin:auto;
+  background:white;
+  padding:18px;
+  border-radius:20px;
+  box-shadow:0 12px 25px rgba(0,0,0,0.25);
+}
+.dark .container{background:#1e1e1e;}
+h2{text-align:center;margin:5px 0;}
+.toggle{text-align:right;cursor:pointer;font-size:14px;}
+.search{
+  display:flex;
+  gap:6px;
+  margin:10px 0;
+}
+input{
+  flex:1;
+  padding:8px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+button{
+  padding:8px 14px;
+  border:none;
+  border-radius:20px;
+  background:#ff7043;
+  color:white;
+  cursor:pointer;
+}
+button:hover{background:#f4511e;}
+.categories{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  margin-bottom:10px;
+}
+.categories button{
+  background:#ffe0d3;
+  color:#333;
+  border-radius:15px;
+  padding:6px 12px;
+}
+.article{
+  background:#fff7f2;
+  padding:12px;
+  border-radius:15px;
+  margin-bottom:12px;
+}
+.dark .article{background:#2a2a2a;}
+.article img{
+  width:100%;
+  border-radius:12px;
+}
+.article h4{margin:6px 0;}
+.article p{font-size:14px;}
+.article a{
+  color:#ff5722;
+  font-weight:bold;
+  text-decoration:none;
+  font-size:13px;
+}
+.save{
+  float:right;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="toggle" onclick="toggleDark()">🌙 Dark</div>
+  <h2>📰 Cute News</h2>
+
+  <div class="search">
+    <input id="search" placeholder="Search news 🔍">
+    <button onclick="getNews()">Go</button>
+  </div>
+
+  <div class="categories">
+    <button onclick="setCategory('technology')">Tech</button>
+    <button onclick="setCategory('sports')">Sports</button>
+    <button onclick="setCategory('science')">Science</button>
+    <button onclick="setCategory('health')">Health</button>
+    <button onclick="setCategory('business')">Business</button>
+  </div>
+
+  <div id="news"></div>
+</div>
+
+<script>
+const apiKey="pub_8c0a4e6264c7421ab85ce8e363a45403";
+let category="technology";
+
+function setCategory(cat){
+  category=cat;
+  getNews();
+}
+
+function getNews(){
+  const q=document.getElementById("search").value;
+  let url=`https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${category}`;
+  if(q) url+=`&q=${q}`;
+
+  fetch(url)
+   .then(res=>res.json())
+   .then(data=>{
+     let out="";
+     data.results.slice(0,6).forEach(n=>{
+       out+=`
+        <div class="article">
+          <span class="save" onclick="saveNews('${n.title}')">⭐</span>
+          ${n.image_url?`<img src="${n.image_url}">`:""}
+          <h4>${n.title}</h4>
+          <p>${n.description||"Click to read more"}</p>
+          <a href="${n.link}" target="_blank">Read more →</a>
+        </div>`;
+     });
+     document.getElementById("news").innerHTML=out;
+   });
+}
+
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
+
+function saveNews(title){
+  let saved=JSON.parse(localStorage.getItem("saved"))||[];
+  saved.push(title);
+  localStorage.setItem("saved",JSON.stringify(saved));
+  alert("Saved ⭐");
+}
+
+getNews();
+</script>
+
+</body>
+</html>
